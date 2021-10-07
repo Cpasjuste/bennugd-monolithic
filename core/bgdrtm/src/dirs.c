@@ -1,7 +1,7 @@
 /*
- *  Copyright © 2006-2012 SplinterGU (Fenix/Bennugd)
- *  Copyright © 2002-2006 Fenix Team (Fenix)
- *  Copyright © 1999-2002 José Luis Cebrián Pagüe (Fenix)
+ *  Copyright ï¿½ 2006-2012 SplinterGU (Fenix/Bennugd)
+ *  Copyright ï¿½ 2002-2006 Fenix Team (Fenix)
+ *  Copyright ï¿½ 1999-2002 Josï¿½ Luis Cebriï¿½n Pagï¿½e (Fenix)
  *
  *  This file is part of Bennu - Game Development
  *
@@ -267,6 +267,8 @@ __DIR_ST * dir_open( const char * path )
 
 #if defined(TARGET_MAC) || defined(TARGET_BEOS) || defined(TARGET_WII) || defined(TARGET_PSP) || defined(TARGET_ANDROID)
     r = glob( hDir->pattern, GLOB_ERR | GLOB_NOSORT, NULL, &hDir->globd );
+#elif defined(TARGET_SWITCH)
+    r = 0;
 #else
     r = glob( hDir->pattern, GLOB_ERR | GLOB_PERIOD | GLOB_NOSORT, NULL, &hDir->globd );
 #endif
@@ -294,7 +296,9 @@ void dir_close ( __DIR_ST * hDir )
 #ifdef _WIN32
     FindClose( hDir->handle );
 #else
+#if !defined(TARGET_SWITCH)
     globfree( &hDir->globd );
+#endif
     free( hDir->pattern );
 #endif
 

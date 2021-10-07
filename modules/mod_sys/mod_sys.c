@@ -105,6 +105,8 @@ static int modsys_exec( INSTANCE * my, int * params )
     }
     string_discard(params[1]);
     return 0;
+#elif defined(TARGET_SWITCH)
+    return 0;
 #else
     int mode = params[0];
     char * filename = ( char * ) string_get( params[1] );

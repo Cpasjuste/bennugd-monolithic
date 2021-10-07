@@ -20,21 +20,11 @@ if (PLATFORM_VITA)
             -Ofast -ffast-math -ftree-vectorize -mfpu=neon
             )
 elseif (PLATFORM_SWITCH)
-    list(APPEND BGDRTM_CFLAGS
-            -DTARGET_SWITCH -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0"
-            )
+    list(APPEND BGDRTM_CFLAGS -DTARGET_SWITCH -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0")
+    list(APPEND BGDRTM_LIBS EGL glapi drm_nouveau nx stdc++ modplug opusfile opus mpg123 vorbisfile vorbis ogg)
 else ()
-    list(APPEND BGDRTM_CFLAGS
-            -DTARGET_LINUX -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0"
-            )
-    set(MOD_CHIPMUNK OFF CACHE BOOL "" FORCE)
-    set(MOD_CD OFF CACHE BOOL "" FORCE)
-    set(MOD_DEBUG OFF CACHE BOOL "" FORCE)
-    set(MOD_FMODEX OFF CACHE BOOL "" FORCE)
-    set(MOD_IAP OFF CACHE BOOL "" FORCE)
-    set(MOD_IMAGE OFF CACHE BOOL "" FORCE)
-    set(MOD_SQLITE3 OFF CACHE BOOL "" FORCE)
-    set(MOD_WPAD OFF CACHE BOOL "" FORCE)
+    list(APPEND BGDRTM_CFLAGS -DTARGET_LINUX -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0")
+    list(APPEND BGDRTM_LIBS dl)
 endif ()
 
 # add tre lib
@@ -68,6 +58,7 @@ file(GLOB BGDRTM_SOURCES
         ${CMAKE_SOURCE_DIR}/modules/libvideo/*.c
         ${CMAKE_SOURCE_DIR}/modules/libwm/*.c
         )
+list(REMOVE_ITEM BGDRTM_SOURCES ${CMAKE_SOURCE_DIR}/core/common/b_crypt.c)
 
 list(APPEND BGDRTM_INCLUDES
         ${SDL2_INCLUDE_DIR}
@@ -96,6 +87,16 @@ list(APPEND BGDRTM_INCLUDES
         )
 
 # build options
+set(MOD_CHIPMUNK OFF CACHE BOOL "" FORCE)
+set(MOD_CD OFF CACHE BOOL "" FORCE)
+set(MOD_CURL OFF CACHE BOOL "" FORCE)
+set(MOD_DEBUG OFF CACHE BOOL "" FORCE)
+set(MOD_FMODEX OFF CACHE BOOL "" FORCE)
+set(MOD_FSOCK OFF CACHE BOOL "" FORCE)
+set(MOD_IAP OFF CACHE BOOL "" FORCE)
+set(MOD_IMAGE OFF CACHE BOOL "" FORCE)
+set(MOD_SQLITE3 OFF CACHE BOOL "" FORCE)
+set(MOD_WPAD OFF CACHE BOOL "" FORCE)
 include(${CMAKE_SOURCE_DIR}/cmake/options.cmake)
 
 # bgdrtm library
@@ -112,16 +113,14 @@ include(cmake/compiler_flags.cmake)
 target_link_libraries(${PROJECT_NAME}
         bgdrtm
         libtre
-        ${BGDRTM_LIBS}
-        ${SDL2_LIBRARIES}
         ${SDL2_MIXER_LIBRARIES}
-        ${SDL2_LIBS}
+        ${SDL2_LIBRARIES}
         ${PNG_LIBRARIES}
         ${ZLIB_LIBRARIES}
         ${VORBIS_LIBRARY}
         ${OGG_LIBRARY}
+        ${BGDRTM_LIBS}
         m
-        dl
         )
 
 if (PLATFORM_VITA)
