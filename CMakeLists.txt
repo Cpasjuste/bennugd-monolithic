@@ -14,15 +14,19 @@ set(BGDRTM_LIBS "")
 
 if (PLATFORM_VITA)
     list(APPEND BGDRTM_CFLAGS
-            -DTARGET_VITA -D__MONOLITHIC__ -DVERSION="1.0.0"
+            -DTARGET_VITA -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0"
             -Dmemcpy=sceClibMemcpy -Dmemcmp=sceClibMemcmp -Dstrcmp=sceClibStrcmp
             -Dstrncmp=sceClibStrncmp -Dstrncpy=sceClibStrncpy
             -Ofast -ffast-math -ftree-vectorize -mfpu=neon
             )
 elseif (PLATFORM_SWITCH)
-    list(APPEND BGDRTM_CFLAGS -DTARGET_SWITCH -D__MONOLITHIC__ -DVERSION="1.0.0")
+    list(APPEND BGDRTM_CFLAGS
+            -DTARGET_SWITCH -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0"
+            )
 else ()
-    list(APPEND BGDRTM_CFLAGS -DTARGET_LINUX -DVERSION="1.0.0")
+    list(APPEND BGDRTM_CFLAGS
+            -DTARGET_LINUX -D__MONOLITHIC__ -DNO_MODSENSOR -DVERSION="1.0.0"
+            )
     set(MOD_CHIPMUNK OFF CACHE BOOL "" FORCE)
     set(MOD_CD OFF CACHE BOOL "" FORCE)
     set(MOD_DEBUG OFF CACHE BOOL "" FORCE)
@@ -108,6 +112,7 @@ include(cmake/compiler_flags.cmake)
 target_link_libraries(${PROJECT_NAME}
         bgdrtm
         libtre
+        ${BGDRTM_LIBS}
         ${SDL2_LIBRARIES}
         ${SDL2_MIXER_LIBRARIES}
         ${SDL2_LIBS}
